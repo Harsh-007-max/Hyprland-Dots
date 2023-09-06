@@ -1,0 +1,122 @@
+{
+  "layer": "top",
+    // "modules-left": ["custom/arch", "wlr/workspaces"],
+    "modules-left": ["custom/arch", "hyprland/workspaces","hyprland/window"],
+    // "modules-left": ["custom/arch", "wlr/workspaces","custom/previous","mpris","custom/next"],
+    // "modules-center": ["cpu","memory","disk","temperature" ],
+    //"modules-right": ["backlight", "pulseaudio", "bluetooth", "network", "battery"],
+    "modules-right": ["bluetooth", "network", "battery"],
+    "custom/arch": {
+      "format": "  ",
+      "tooltip": false,
+      "on-click": "eww reload --config ~/.config/eww/sidebar/ ; eww open-many back pm clock day system music --toggle --config ~/.config/eww/sidebar/"
+    },
+    "hyprland/window": {
+    "format": " {}",
+    "separate-outputs": false
+    },
+    // "custom/previous":{
+    //   "format":"",
+    //   "on-click": "playerctl previous",
+    //   "tooltip" : false,
+    // },
+    // "custom/next":{
+    //   "format":"",
+    //   "on-click": "playerctl next",
+    //   "tooltip" : false,
+    // },
+    // "mpris": {
+    //   "format": "{player_icon} {status_icon} <i>{title}</i>",
+    //   "format-paused": "{player_icon} {status_icon} <i>{title}</i>",
+    //   "title-len":15,
+    //   "player-icons": {
+    //     "default": " ",
+    //     "mpv": "🎵",
+    //     "spotify": " ",
+    //     "amberol": " ",
+    //   },
+    //   "status-icons": {
+    //     "playing":" ",
+    //     "paused": " ",
+    //     "stopped": " "
+    //   },
+    //   "interval":5,
+    // },
+  // "cpu": {
+  //     "interval": 2,
+  //     "format": "{usage}% ",
+  //     "max-length": 10
+  // },
+  // "memory": {
+  //   "interval": 10,
+  //   "format": "{}% ",
+  //   "max-length": 10
+  // },
+  // "disk": {
+  //   "interval": 10,
+  //   "format": "{percentage_used}%  ",
+  //   // "format": "{percentage_used}% ",
+  //   "path": "/home"
+  // },
+  // "temperature": {
+  //   "hwmon-path": "/sys/class/hwmon/hwmon6/temp1_input",
+  //   "format": "{temperatureC}°C "
+  // },
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    // "format": "{name}: {icon}",
+    "format-icons": {
+      "1":"1",
+      "2":"2",
+      "3":"3",
+      "4":"4",
+      "5":"5",
+      "6":"6",
+      "7":"7",
+      "8":"8",
+      "9":"9",
+      "10":"10",
+    },
+  },
+    "clock": {
+      "format": "<span color='#b4befe'> </span>{:%I:%M %p}",
+    },
+    // "backlight": {
+    //   "device": "amdgpu_b10",
+    //   "format": "<span color='#b4befe'>{icon}</span> {percent}%",
+    //   "format-icons": ["", "", "", "", "", "", "", "", ""],
+    //   "tooltip":false
+    // },
+    // "pulseaudio": {
+    //   "format": "<span color='#b4befe'>{icon}</span> {volume}%",
+    //   "format-muted": "",
+    //   "tooltip": false,
+    //   "format-icons": {
+    //     "headphone": "",
+    //     "default": ["", "", "󰕾", "󰕾", "󰕾", "", "", ""]
+    //   },
+    //   "scroll-step": 1,
+    //   "on-click": "eww open audio_menu --toggle --config ~/.config/eww/audio_menu/"
+    // },
+    "bluetooth": {
+      "format": "<span color='#b4befe'></span> {status}",
+      "format-disabled": "", // an empty format will hide the module
+      "format-connected": "<span color='#b4befe'></span> {num_connections}",
+      "tooltip-format": "{device_enumerate}",
+      "tooltip-format-enumerate-connected": "{device_alias}   {device_address}"
+    },
+    "network": {
+      "format": "{ifname}",
+      "format-wifi": "<span color='#b4befe'><b> </b></span>{essid}",
+      "format-ethernet": "{ipaddr}/{cidr}  ",
+      "format-disconnected": "<span color='#b4befe'><b> </b></span>",
+      "tooltip": false,
+      "on-click":"/home/harsh/git-repo/rofi-wifi-menu/rofi-wifi-menu.sh",
+    },
+    "battery": {
+      "format": "<span color='#b4befe'>{icon}</span>{capacity}% ",
+      "format-icons": ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+      "format-charging": "<span color='#b4befe'><b>  </b></span> {capacity}%",
+      "tooltip": false
+    }
+}

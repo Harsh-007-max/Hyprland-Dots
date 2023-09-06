@@ -1,0 +1,130 @@
+#!/bin/bash
+
+STATUS="$(playerctl status)"
+COVER=$(ls -t /tmp/cover-*.png 2>/dev/null | head -1)
+MUSIC_DIR="$HOME/Music"
+percentage="$2"
+flag=false
+seek_time_seconds=0
+get_song() {
+    song_title=$(playerctl metadata title)
+    if [ -n "$song_title" ]; then
+        echo "$song_title"
+    else
+        echo "No music is currently playing."
+    fi
+}
+
+get_artist() {
+	artist=$(playerctl metadata artist)
+	if [[ -z "$artist" ]]; then
+		echo ""
+	else
+		echo "$artist"
+	fi	
+}
+
+get_status() {
+	if [[ $STATUS == *"[playing]"* ]]; then
+		echo ""
+	else
+		echo ""
+	fi
+}
+
+get_cover() {
+	# Source directory for cover-*.png files
+	source_dir="/tmp/"
+
+	# Destination directory for cover.png
+	dest_dir="$HOME/.config/eww/sidebar/images/"
+
+	# Remove any existing cover.png in the destination directory
+	rm -f "${dest_dir}cover.png"
+
+	# Find and copy the latest cover-*.png file to cover.png
+	latest_cover=$(playerctl metadata mpris:artUrl | sed 's,file://,,')
+	if [ -n "$latest_cover" ]; then
+	    cp "$latest_cover" "${dest_dir}cover.png"
+		echo "done"
+	fi
+	album_art_url=$(playerctl metadata mpris:artUrl | sed 's,file://,,')
+	album_art_filename=$(basename "$album_art_url")
+
+	if [[ "$album_art_url" == "https://"* ]]; then
+	    # wget -O ~/.config/eww/sidebar/images/cover.png "$album_art_url"
+	    echo "$HOME/.config/eww/sidebar/images/cover.png"
+	elif [ -n "$album_art_url" ] && [ -f "/tmp/$album_art_filename" ]; then
+	    echo "$album_art_filename"
+	else
+	    echo "$HOME/.config/eww/sidebar/images/music.png"
+	fi
+	
+}
+
+get_time() {
+	position=$(playerctl position)
+	duration=$(playerctl metadata mpris:length | awk '{print int($1/1000000)}') # Convert nanoseconds to seconds
+	progress=$(echo "scale=2; $position * 100 / $duration" | bc | cut -d'.' -f1)
+	if [["$flag"]]; then
+		$progress="$seek_time_seconds"
+	fi
+	echo "$progress"
+}
+
+get_ctime() {
+	position=$(playerctl position)
+	duration=$(playerctl metadata mpris:length | awk '{print int($1/1000000)}') # Convert nanoseconds to seconds
+
+	# Convert the position to an integer
+	position_int=${position%.*}
+
+	# Calculate minutes and seconds
+	position_minutes=$((position_int / 60))
+	position_seconds=$((position_int % 60))
+
+	# Format the time as "minutes:seconds"
+	formatted_position=$(printf "%02d:%02d" "$position_minutes" "$position_seconds")
+
+	echo "$formatted_position"
+}
+get_ttime() {
+	duration=$(playerctl metadata mpris:length | awk '{print int($1/1000000)}') # Convert nanoseconds to seconds
+	duration_minutes=$((duration / 60))
+	duration_seconds=$((duration % 60))
+	formatted_duration=$(printf "%02d:%02d" "$duration_minutes" "$duration_seconds")
+	echo "$formatted_duration"
+}
+seek() {
+	# echo "$percentage"
+	echo "$percentage"
+	max_time_seconds=$(playerctl metadata mpris:length | awk '{print int($1/1000000)}')
+	# max_time_seconds=$(playerctl position | awk '{print int($1)}')
+	seek_time_seconds=$(((percentage*100)/ max_time_seconds))
+	playerctl position $seek_time_seconds
+	flag=true
+	get_time
+	flag=false
+	echo "$seek_time_seconds"
+}
+if [[ "$1" == "--song" ]]; then
+	get_song
+elif [[ "$1" == "--artist" ]]; then
+	get_artist
+elif [[ "$1" == "--status" ]]; then
+	get_status
+elif [[ "$1" == "--time" ]]; then
+	get_time
+elif [[ "$1" == "--ctime" ]]; then
+	get_ctime
+elif [[ "$1" == "--ttime" ]]; then
+	get_ttime
+elif [[ "$1" == "--cover" ]]; then
+	get_cover
+elif [[ "$1" == "--next" ]]; then
+	{ playerctl next ;get_cover;eww update cover_art="~/.config/eww/sidebar/images/cover.png";}
+elif [[ "$1" == "--prev" ]]; then
+	{ playerctl previous;get_cover;eww update cover_art="~/.config/eww/sidebar/images/cover.png";}
+elif [[ "$1" == "--seek" ]]; then
+	{ seek; }
+fi

@@ -1,0 +1,143 @@
+(defpoll clock_time :interval "5m" "date +\%I")
+(defpoll clock_minute :interval "5s" "date +\%M")
+(defpoll clock_date :interval "10h" "date '+%d/%m'")
+(defvar time_rev false)
+(defvar eww "eww -c $HOME/.config/eww/top_bar")
+(defpoll volume_percent :interval "3s" "amixer -D pulse sget Master | grep 'Left:' | awk -F'[][]' '{ print $2 }' | tr -d '%'")
+(defpoll brightness_percent :interval "5s" "brightnessctl -m -d amdgpu_bl1 | awk -F, '{print substr($4, 0, length($4)-1)}' | tr -d '%'")
+(defpoll calendar_day :interval "20h" "date '+%d'")
+(defpoll calendar_year :interval "20h" "date '+%Y'")
+
+(defwindow bar
+    :geometry (geometry :x "0%"
+        :y "9px"
+        :width "98%"
+        :height "30px"
+        :anchor "top center")
+    :stacking "fg"
+    :windowtype "dock"
+(bar_1))
+(defwidget bar_1 []
+    (box :class "bar_class"
+        :orientation "h"
+        (right)
+        ; (center)
+        (left)
+    )
+)
+(defwidget right []
+	(box :orientation "h" 
+		:space-evenly false  
+        :halign "start"
+		:class "right_modules"
+        (workspaces)
+    )
+)
+(defwidget workspaces []
+    (box :class "workspaces"
+        :orientation "h"
+        :space-evenly true
+        :halign "start"
+        :spacing 10
+        (button :onclick "wmctrl -s 0" 1)
+        (button :onclick "wmctrl -s 1" 2)
+        (button :onclick "wmctrl -s 2" 3)
+        (button :onclick "wmctrl -s 3" 4)
+        (button :onclick "wmctrl -s 4" 5)
+        (button :onclick "wmctrl -s 5" 6)
+        (button :onclick "wmctrl -s 6" 7)
+        (button :onclick "wmctrl -s 7" 8)
+        (button :onclick "wmctrl -s 8" 9)
+        (button :onclick "wmctrl -s 9" 10)
+    )
+)
+(defwidget left []
+	(box :orientation "h" 
+		:space-evenly false  
+        :halign "end"
+		:class "left_modules"
+        (bright)
+        (volume)
+        (wifi)
+        (sep)
+        (bat)
+        (mem)
+        (sep)
+        (clock_module)
+    )
+)
+(defwidget bright []
+    (eventbox :onhover "${eww} update br_reveal=true" :onhoverlost "${eww} update br_reveal=false"
+        (box :class "module-2" :space-evenly "false" :orientation "h" :spacing "3" 
+            (label :text "" :class "bright_icon" :tooltip "brightness")
+            (revealer :transition "slideleft"
+                :reveal br_reveal
+                :duration "350ms"
+                (scale    :class "brightbar"
+                    :value brightness_percent
+                    :orientation "h"
+                    :tooltip "${brightness_percent}%"
+                    :max 100
+                    :min 0
+                    :onchange "brightnessctl set {}%" 
+                )
+            )
+        )
+    )
+)
+(defwidget clock_module []
+    (eventbox :onhover "${eww} update time_rev=true"
+                :onhoverlost "${eww} update time_rev=false"
+        (box :class "module" :space-evenly "false" :orientation "h" :spacing "3" 
+            (label :text clock_time :class "clock_time_class" )
+            (label :text "" :class "clock_time_sep" )
+            (label :text clock_minute :class "clock_minute_class")
+            (revealer :transition "slideleft"
+                    :reveal time_rev
+                    :duration "350ms"
+            (button :class "clock_date_class"
+                :onclick "$HOME/.config/eww/bar/scripts/pop calendar" clock_date
+            )
+            )
+        )
+    )
+)
+(defwindow calendar
+	:geometry (geometry :x "-20px" 
+		:y "7%" 
+        :anchor "top right"
+		:width "270px" 
+		:height "60px"
+    )
+    (cal)
+)
+(defwidget cal []
+	(box :class "cal" :orientation "v"
+	    (box :class "cal-in"
+	        (calendar :class "cal" 
+	            :day calendar_day 
+	            :year calendar_year
+            )
+        )
+    )
+)
+(defwidget volume []
+    (eventbox :onhover "${eww} update vol_reveal=true"
+                :onhoverlost "${eww} update vol_reveal=false"
+        (box :class "module-2" :space-evenly "false" :orientation "h" :spacing "3" 
+            (button   :onclick "scripts/pop audio"   :class "volume_icon" "")
+            (revealer :transition "slideleft"
+                :reveal vol_reveal
+                :duration "350ms"
+                (scale    :class "volbar"
+                    :value volume_percent
+                    :orientation "h"
+                    :tooltip "${volume_percent}%"
+                    :max 100
+                    :min 0
+                    :onchange "amixer -D pulse set Master {}%" 
+                )
+            )
+        )
+    )
+)

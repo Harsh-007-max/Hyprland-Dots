@@ -1,0 +1,61 @@
+(defpoll brightness_val :interval "100ms" "brightnessctl -m -d amdgpu_bl1 | awk -F, '{print substr($4, 0, length($4)-1)}' | tr -d '%'")
+(
+    defwidget metric [img value onchange]
+    (
+        box
+        :class "audio_box"
+        :orientation "h"
+        :space-evenly "false"
+        (
+            image
+            :class "img"
+            :path img
+            :image-width 50
+            :image-height 50
+        )
+        (
+            scale
+            :class "slider"
+            :min 0
+            :max 100
+            :value value
+            :tooltip value
+            :onchange onchange 
+        )
+        (
+            label
+            :class "value-label"
+            :text value
+            :limit-width 4
+            :wrap "true"
+        )
+    )
+)
+(
+    defwidget brightness []
+    (
+        box
+        :orientation "h"
+        (metric
+            :img "/home/harsh/.config/eww/brightness_ctl/images/sun.png"
+            :value brightness_val
+            :onchange "brightnessctl set {}%"
+        )
+    )
+)
+(
+    defwindow brightness_ctl
+    :monitor 0
+    :windowtype "dialog"
+    :exclusive "false"
+    :stacking "fg"
+    :geometry
+    (geometry
+        :x "0.5%"
+        :y "10%"
+        :anchor "bottom center"
+        :width "10%"
+        :height "7%"
+    )
+    (brightness)
+)

@@ -1,0 +1,48 @@
+(
+    defwindow audio_menu
+    :monitor 0
+    :exclusive "false"
+    :stacking "overlay"
+    :geometry
+    (geometry 
+        :x "250px"
+        :y "5px"
+        :anchor "top right"
+    )
+    (audio_menu)
+)
+
+(
+    defwidget audio_menu []
+    (
+        box :class "parent" :space-evenly "false" :orientation "v"
+        (
+            box :class "header" :space-evenly "false"
+            (label :text "    Switch Audio Devices" :class "title")
+            (
+                button 
+                :class "exit" 
+                :onclick "eww open audio_menu --toggle -c ~/.config/eww/audio_menu/"
+                (label :text "  ")
+            )
+        )
+        (
+            box :class "body" :space-evenly "false" :orientation "v"
+            (
+                button 
+                :class "button"
+                :vexpand "false"
+                :onclick "scripts/set_audio_device.sh alsa_output.pci-0000_04_00.6.analog-stereo"
+                (label :text "   Speakers")
+            )
+            (
+                button 
+                :class "button"
+                :hexpand "false"
+                :onclick "scripts/set_audio_device.sh bluez_output.84_AB_26_CC_BE_25.1"
+                (label :text "󰋋   Headphones")
+            ) 
+        )
+    )
+)
+

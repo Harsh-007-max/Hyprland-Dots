@@ -1,0 +1,25 @@
+*{
+  all:unset;
+}
+.msc_ctl_bg {
+    all:unset;
+    background-color: #2f2f2f;
+    min-width: 203px;
+	border-radius: 35px;
+}
+.music_cover_art {
+  // all:unset;
+	background-size: contain;
+  background-repeat:no-repeat;
+  // background-image: url("../../../../../tmp/cover-yvqvibli.png");
+  background-image: url("../images/cover.png");
+  background-color: black;
+	background-position:center;
+	min-height: 70px;
+  box-shadow: 5px 5px 5px 5px #06060b;
+  // box-shadow: 5px 5px 5px 5px #2f2f2f;
+  min-width: 150px;
+	margin: 20px;
+  margin-bottom: 30px;
+	border-radius: 20px;
+}

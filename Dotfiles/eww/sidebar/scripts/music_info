@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Source directory for cover-*.png files
+source_dir="/tmp/"
+
+# Destination directory for cover.png
+dest_dir="$HOME/.config/eww/sidebar/images/"
+
+# Remove any existing cover.png in the destination directory
+rm -f "${dest_dir}cover.png"
+
+# Find and copy the latest cover-*.png file to cover.png
+latest_cover=$(playerctl metadata mpris:artUrl | sed 's,file://,,')
+if [ -n "$latest_cover" ]; then
+    cp "$latest_cover" "${dest_dir}cover.png"
+	echo "done"
+fi

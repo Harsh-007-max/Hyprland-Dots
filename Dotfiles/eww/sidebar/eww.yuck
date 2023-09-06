@@ -1,0 +1,539 @@
+(defvar IMAGE "/home/harsh/.config/eww/prof_pic/5.png")
+(defpoll time_hour :interval "5m" "date +\"%I\"")
+(defpoll time_min :interval "5s" "date +\"%M\"")
+(defpoll time_day :interval "30m" "date +\"%d\"")
+(defpoll time_month :interval "48h" "date +\%m")
+(defpoll time_day_name :interval "30m" "date +\"%A\"")
+(defpoll time_month_name :interval "48h" "date +\%B")
+(defpoll battery :interval "5s" "./scripts/battery --bat")
+(defpoll memory :interval "5s" "scripts/memory")
+(defpoll cpu :interval "5s" "scripts/cpu")
+(defpoll temp :interval "5s" "cat /sys/class/hwmon/hwmon6/temp1_input | awk '{print $1/1000}'")
+(defpoll song :interval "1s"  "./scripts/music --song")
+(defpoll song_artist :interval "1s"  "./scripts/music --artist")
+(defpoll current_status :interval "1s"  "./scripts/music --time")
+(defpoll song_status :interval "2s"  "./scripts/music --status")
+(defpoll cover_art :interval "2s"  "./scripts/music --cover")
+(defpoll volume :interval "100ms" "pactl get-sink-volume @DEFAULT_SINK@ | grep Volume | head -n1 |awk '{print $5}' | tr -d '%'" )
+(defpoll brightness_val :interval "100ms" "brightnessctl -m -d amdgpu_bl1 | awk -F, '{print substr($4, 0, length($4)-1)}' | tr -d '%'")
+(defwidget bg []
+    (box
+        :class "bg"
+        (profilePic)
+    )
+)
+(
+    defwidget profilePic []
+    (
+        box
+        :class "bg_alt"
+        :orientation "v"
+        :spacing 20
+        :space-evenly "false"
+        :vexpand "false"
+        :hexpand "false"
+        (
+            box
+            :class "profile_picture"
+            :halign "center"
+            :style "background-image: url('${IMAGE});"
+        )
+        (
+            label
+            :class "profile_greeting" 
+            :halign "center"
+            :wrap "true"
+            :limit-width 25
+            :text "Welcome Harsh" 
+        )
+    )
+)
+(defwindow back
+    :windowtype "dialog"
+    :monitor 0
+    :exclusive "false"
+    :stacking "fg"
+    :geometry 
+    (geometry 
+        ; :anchor "left center"
+        :y "20px"
+        :x "20px"
+        :width "250px"
+        :height "30%"
+    )
+    (bg)
+)
+(
+    defwidget powermenu []
+    (
+        box
+        :clas "pm"
+        :orientation "h"
+        :space-evenly "false"
+        :vexpand "false"
+        :hexpand "false"
+        :spacing 10
+        (
+            button
+            :class "close_btn"
+            :halign "center"
+            :tooltip "logout"
+            :onclick "loginctl terminate-user `whoami`" ""
+        )
+        (
+            button
+            :class "close_btn"
+            :halign "center"
+            :tooltip "sleep"
+            :onclick "/bin/bash ~/.config/swaylock/lock.sh & systemctl suspend" ""
+        )
+        (
+            button
+            :class "close_btn"
+            :halign "center"
+            :tooltip "reboot"
+            :onclick "reboot" ""
+        )
+        (
+            button
+            :class "close_btn"
+            :halign "center"
+            :tooltip "power off"
+            :onclick "poweroff" ""
+        )
+        (
+            label
+            :text ""
+        )
+    )
+)
+(defwindow pm
+    :windowtype "dialog"
+    :monitor 0
+    :exclusive "false"
+    :stacking "fg"
+    :geometry
+    (geometry
+        :y "20px"
+        :x "280px"
+        :width "210px"
+        :height "9%"
+    )
+    (powermenu)
+)
+; clock
+(defwidget time []
+    (
+        box
+        :class "time"
+        :orientation "v"
+        :vexpand "false"
+        :hexpand "false"
+        :spacing 0
+        (
+            box
+            :orientation "h"
+            :space-evenly "false"
+            :vexpand "false"
+            :hexpand "false"
+            :halign "center"
+            :spacing 0
+            (
+                label
+                :class "hour_class"
+                :valign "start"
+                :wrap "true"
+                :limit-width 25
+                :text time_hour
+            )
+            (
+                label
+                :class "minute_class"
+                :valign "start"
+                :halign "start"
+                :wrap "true"
+                :limit-width 25
+                :text time_min
+            )
+        )
+        (
+            box
+            :orientation "h"
+            :spacing 0
+            :space-evenly "false"
+            :halign "center"
+            :vexpand "false"
+            :hexpand "false"
+            (
+                label
+                :class "day_class"
+                :valign "start"
+                :text time_day
+            )
+            (
+                label
+                :class "time_sep"
+                :valign "start"
+                :text " "
+            )
+            (
+                label
+                :class "month_class"
+                :valign "start"
+                :text time_month
+            )
+        )
+    )
+)
+
+(defwindow clock
+    :windowtype "dialog"
+    :monitor 0
+    :exclusive "false"
+    :stacking "fg"
+    :geometry
+    (geometry
+        :y "125px"
+        :x "280px"
+        :width "270px"
+        :height "10%"
+    )
+    (time)
+)
+(defwidget day []
+    (
+        box
+        :orientation "h"
+        :class "time spc"
+        :spacing 0
+        :space-evenly "false"
+        :halign "center"
+        (
+            label
+            :class "day_class_n"
+            :text time_day_name
+        )
+        (
+            label
+            :class "time_sep"
+            :text ", "
+        )
+        (
+            label
+            :class "month_class_n"
+            :text time_month_name
+        )
+    )
+)
+(defwindow day
+    :windowtype "dialog"
+    :monitor 0
+    :exclusive "false"
+    :stacking "fg"
+    :geometry
+    (geometry
+        :y "285px"
+        :x "280px"
+        :width "250px"
+        :height "6%"
+    )
+    (day)
+)
+; system monitor
+(defwidget system []
+    (
+        box
+        :class "sys_win"
+        :orientation "h"
+        :space-evenly "false"
+        :hexpand "false"
+        :vexpand "false"
+        :spacing 0
+        (
+            box
+            :class "sys_bat_box"
+            :orientation "h"
+            :space-evenly "false"
+            :hexpand "false"
+            :vexpand "false"
+            (
+                circular-progress
+                :value battery
+                :class "sys_bat"
+                :thickness 11
+                (
+                    label
+                    :text ""
+                    :class "sys_icon_bat"
+                    :limit-width 2
+                    :show-truncated false
+                    :wrap false
+                    :tooltip battery
+                )
+            )
+        )
+        (
+            box
+            :class "sys_cpu_box"
+            :orientation "h"
+            :space-evenly "false"
+            :hexpand "false"
+            :vexpand "false"
+            (
+                circular-progress
+                :value cpu
+                :class "sys_cpu"
+                :thickness 11
+                (
+                    label
+                    :text ""
+                    :class "sys_icon_cpu"
+                    :limit-width 2
+                    :show-truncated false
+                    :wrap false
+                    :tooltip cpu
+                )
+            )
+        )
+        (
+            box
+            :class "sys_mem_box"
+            :orientation "h"
+            :space-evenly "false"
+            :hexpand "false"
+            :vexpand "false"
+            (
+                circular-progress
+                :value memory
+                :class "sys_mem"
+                :thickness 11
+                (
+                    label
+                    :text ""
+                    :class "sys_icon_mem"
+                    :limit-width 2
+                    :show-truncated false
+                    :wrap false
+                    :tooltip memory
+                )
+            )
+        )
+        (
+            box
+            :class "sys_tmp_box"
+            :orientation "h"
+            :space-evenly "false"
+            :hexpand "false"
+            :vexpand "false"
+            (
+                circular-progress
+                :value temp
+                :class "sys_tmp"
+                :thickness 11
+                (
+                    label
+                    :text ""
+                    :class "sys_icon_cpu_temp"
+                    :limit-width 2
+                    :show-truncated false
+                    :wrap false
+                    :tooltip temp
+                )
+            )
+        )
+    )
+) 
+(defwindow system
+    :windowtype "dialog"
+    :monitor 0
+    :exclusive "false"
+    :stacking "fg"
+    :geometry
+    (geometry
+        :y "360px"
+        :x "20px"
+        :width "300px"
+        :height "16%"
+    )
+    (system)
+)
+
+; Music Player
+(defwidget music []
+    (box
+        :class "msc_ctl_bg" 
+        :orientation "h" 
+        :space-evenly "false" 
+        :vexpand "false" 
+        :hexpand "false"
+        (box 
+            :class "music_cover_art" 
+            :vexpand "false" 
+            :hexpand "false" 
+            :style "background-image: url('${cover_art}'); width: 40px; height: 20px;"
+            ; :style "background-image: url('./images/music.png'); width: 50px; height: 50px;"
+        )
+        (
+            box
+            :class "msc_ctl_box"
+            :orientation "v"
+            :space-evenly "false"
+            :vexpand "false"
+            :hexpand "false"
+            (
+                box
+                :orientation "v"
+                :spacing 10
+                :space-evenly "false"
+                :vexpand "false"
+                :hexpand "false"
+                :class "msc_bg"
+                (
+                    label
+                    :halign "start"
+                    :class "song"
+                    :wrap "false"
+                    :limit-width 27
+                    :text song
+                )
+                (
+                    label 
+                    :halign "start" 
+                    :class "song_artist" 
+                    :wrap "true" 
+                    :limit-width 15 
+                    :text song_artist
+                )
+            )
+            ; (
+            ;     box
+            ;     :class "music_bar" 
+            ;     :halign "center" 
+            ;     :vexpand "false" 
+            ;     :hexpand "false" 
+            ;     :space-evenly "false" 
+            ;     (scale :onscroll "./scripts/music --seek {}" :min 0 :active "true" :max 100 :value current_status)
+            ; )
+            (
+                box
+                :orientation "h" 
+                :spacing 8 
+                :halign "center" 
+                :space-evenly "false" 
+                :vexpand "false" 
+                :hexpand "false"
+                (button 
+                    :class "song_btn_prev" 
+                    :onclick "./scripts/music --prev ; eww update cover_art='NORMAL'" ""
+                )
+				(button 
+                    :class "song_btn_play" 
+                    :onclick "playerctl play-pause ; eww update cover_art='NORMAL'" 
+                    song_status
+                )
+				(button 
+                    :class "song_btn_next" 
+                    :onclick "./scripts/music --next ; eww update cover_art='NORMAL'" ""
+                )
+            )
+        )
+    )
+)
+(defwindow music
+    :windowtype "dialog"
+    :monitor 0
+    :exclusive "false"
+    :geometry
+    (geometry
+        :y "545px"
+        :x "25px"
+        :width "300px"
+        :height "15%"
+    )
+    (music)
+)
+
+; brightness/volume controls
+
+(
+    defwidget metric [img value onchange]
+    (
+        box
+        :class "audio_box"
+        :orientation "h"
+        :space-evenly "false"
+        (
+            image
+            :class "img"
+            :path img
+            :image-width 50
+            :image-height 50
+        )
+        (
+            scale
+            :class "slider"
+            :min 0
+            :max 100
+            :value value
+            :tooltip value
+            :onchange onchange 
+        )
+        (
+            label
+            :class "value-label"
+            :text value
+            :limit-width 4
+            :wrap "true"
+        )
+    )
+)
+
+(defwidget bvctl []
+    (
+        box
+        :class "bvctl_bg"
+        :orientation "v"
+        :space-evenly "false"
+        :vexpand "false"
+        :hexpand "false"
+        (
+            box
+                :class "volctl_bg"
+                :vexpand "false"
+                :hexpand "false"
+                :orientation "h"
+                (
+                    metric
+                        :img "/home/harsh/.config/eww/sidebar/images/speaker.png"
+                        :value volume
+                        :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
+                )
+        )
+        (
+            box
+                :class "bctl_bg"
+                :vexpand "false"
+                :orientation "h"
+                (
+                    metric 
+                        :img "/home/harsh/.config/eww/sidebar/images/sun.png"
+                        :value brightness_val
+                        :onchange "brightnessctl set {}%"
+                )
+        )
+    )
+)
+
+(defwindow bvctl
+    :windowtype "dialog"
+    :monitor 0
+    :exclusive "false"
+    :geometry
+    (geometry
+        :y "712px"
+        :x "15px"
+        :width "400px"
+        :height "10%"
+    )
+    (bvctl)
+)

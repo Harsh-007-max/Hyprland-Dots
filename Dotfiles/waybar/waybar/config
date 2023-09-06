@@ -1,0 +1,53 @@
+{
+    "layer": "top",
+    "modules-left": ["custom/arch", "hyprland/workspaces","hyprland/window"],
+    "modules-right": ["bluetooth", "network", "battery"],
+    "custom/arch": {
+        "format": "  ",
+        "tooltip": false,
+        "on-click": "eww reload --config ~/.config/eww/sidebar/ ; eww open-many back pm clock day system music --toggle --config ~/.config/eww/sidebar/"
+    },
+    "hyprland/window": {
+        "format": "  {}",
+        "separate-outputs": false
+    },
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "1":"1",
+            "2":"2",
+            "3":"3",
+            "4":"4",
+            "5":"5",
+            "6":"6",
+            "7":"7",
+            "8":"8",
+            "9":"9",
+            "10":"10"
+        }
+    },
+    "clock": {
+        "format": "<span color='#b4befe'> </span>{:%I:%M %p}"
+    },
+    "bluetooth": {
+        "format": "<span color='#b4befe'></span> {status}",
+        "format-disabled": "",
+        "format-connected": "<span color='#b4befe'></span> {num_connections}",
+        "tooltip-format": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}   {device_address}"
+    },
+    "network": {
+        "format": "{ifname}",
+        "format-wifi": "<span color='#b4befe'><b> </b></span>{essid}",
+        "format-ethernet": "  ",
+        "format-disconnected": "<span color='#b4befe'><b> </b></span>",
+        "tooltip": false,
+        "on-click":"/home/harsh/git-repo/rofi-wifi-menu/rofi-wifi-menu.sh"
+    },
+    "battery": {
+        "format": "<span color='#b4befe'>{icon}</span>{capacity}% ",
+        "format-icons": ["  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "],
+        "format-charging": "<span color='#b4befe'><b>  </b></span> {capacity}%",
+        "tooltip": false
+    }
+}

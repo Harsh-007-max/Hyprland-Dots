@@ -1,0 +1,33 @@
+* { all: unset; }
+.audio_box {
+    border: 2px solid #4e4e4e;
+    background-color: #303030;
+    opacity: 0.9;
+    border-radius: 35px;
+}
+.slider trough highlight{
+    all: unset;
+    // background-color: #60adcc;
+    background-image: linear-gradient(to right, #afcee0 30%, #a1bdce 50%, #77a5bf 100% *50);
+    color: #000000;
+    border-radius: 25px;
+    // border-radius: 50px;
+}
+.slider  trough {
+    all: unset;
+    background-color: #4e4e4e;
+    border-radius: 15px;
+    min-height: 25px;
+    min-width: 300px;
+    margin-left: 10px;
+    // margin-right: 20px;
+    margin: 20px 15px 20px 5px; //top left bottom right
+}
+.img{
+    margin: 0px 10px 0px 15px;
+}
+.value-label{
+    margin-right: 15px;
+    font-size: 25px;
+    color: #cce3eb ;
+}
