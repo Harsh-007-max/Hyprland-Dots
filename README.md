@@ -6,4 +6,3 @@
 ## rofi config
 [![Image 3](https://github.com/Harsh-007-max/Hyprland-Dots/blob/master/screenshots/3.png?raw=true "rofi")](#features)
 
-asdf
